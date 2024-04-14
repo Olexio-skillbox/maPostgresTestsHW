@@ -9,6 +9,11 @@ import com.example.movie.movie.exception.MovieAlreadyExistException;
 import com.example.movie.movie.exception.MovieNotFoundException;
 import com.example.movie.movie.repository.MovieRepository;
 import com.example.movie.movie.routes.MovieRoutes;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -75,6 +80,18 @@ public class MovieApiController {
                 .collect(Collectors.toList());
     }
 
+    @Operation(summary = "Редактируем пользователя", description = "Редактирование существующего пользователя")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Пользователь отредактирован",
+                            content = { @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = MovieResponse.class)) }),
+                    @ApiResponse(responseCode = "400", description = "Некорректный запрос",
+                            content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Нет пользователя с таким id",
+                            content = @Content)
+            }
+    )
     @PutMapping(MovieRoutes.EDIT)
     public MovieResponse edit(@PathVariable(value = "id") Long id, @RequestBody EditMovieRequest request)
             throws MovieNotFoundException, BadRequestException {
